@@ -1,8 +1,9 @@
 import {createContext,useContext,useEffect,useState} from 'react';
-import type {Session} from '@supabase/supabase-js';
-import type {Deck} from './types';import {db,defaultDeck,isAdmin,published} from './backend';
-export const AuthContext=createContext<{session:Session|null;admin:boolean;ready:boolean}>({session:null,admin:false,ready:false});
-export function useAuthState(){const[session,setSession]=useState<Session|null>(null),[admin,setAdmin]=useState(false),[ready,setReady]=useState(!db);useEffect(()=>{if(!db)return;let live=true;const update=async(s:Session|null)=>{if(!live)return;setSession(s);setReady(false);try{setAdmin(Boolean(s&&await isAdmin()))}catch{setAdmin(false)}finally{if(live)setReady(true)}};db.auth.getSession().then(({data})=>update(data.session));const {data}=db.auth.onAuthStateChange((_e,s)=>{queueMicrotask(()=>update(s))});return()=>{live=false;data.subscription.unsubscribe()}},[]);return{session,admin,ready}}
+import type {Deck} from './types';
+import {defaultDeck,published} from './backend';
+type LocalState={session:{user:{id:string}}|null;admin:boolean;ready:boolean};
+export const AuthContext=createContext<LocalState>({session:null,admin:true,ready:true});
+export const useAuthState=():LocalState=>({session:null,admin:true,ready:true});
 export const useAuth=()=>useContext(AuthContext);
-export function useOnline(){const[online,set]=useState(navigator.onLine);useEffect(()=>{const f=()=>set(navigator.onLine);window.addEventListener('online',f);window.addEventListener('offline',f);return()=>{window.removeEventListener('online',f);window.removeEventListener('offline',f)}},[]);return online}
-export function useDeck(slug='day1'){const[deck,setDeck]=useState<Deck>(defaultDeck),[status,setStatus]=useState('자료 확인 중'),[loading,setLoading]=useState(true);const refresh=async()=>{setLoading(true);try{setDeck(await published(slug));setStatus(db?(navigator.onLine?'최신 게시본 확인':'마지막 저장된 게시본'):'기본 자료 · 서버 미연결')}catch(e){setStatus((e as Error).message+' · 마지막 자료 유지')}finally{setLoading(false)}};useEffect(()=>{void refresh()},[slug]);return {deck,setDeck,status,loading,refresh}}
+export function useOnline(){const[online,set]=useState(navigator.onLine);useEffect(()=>{const f=()=>set(navigator.onLine);window.addEventListener('online',f);window.addEventListener('offline',f);return()=>{window.removeEventListener('online',f);window.removeEventListener('offline',f)}},[]);return online;}
+export function useDeck(slug='day1'){const[deck,setDeck]=useState<Deck>(defaultDeck),[status,setStatus]=useState(''),[loading,setLoading]=useState(true);const refresh=async()=>{setLoading(true);try{setDeck(await published(slug));setStatus('')}catch(e){setStatus((e as Error).message)}finally{setLoading(false)}};useEffect(()=>{void refresh()},[slug]);return {deck,setDeck,status,loading,refresh};}
