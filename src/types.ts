@@ -3,7 +3,7 @@ export interface Card {title:string;text:string;tag?:string;media?:Media}
 export interface Media {kind:'image'|'video';src:string;alt:string;x:number;y:number;zoom:number;path?:string}
 export interface Tab {label:string;text:string;vocab:string;activity:string;question:string}
 export interface Interaction {kind:'reveal'|'steps'|'tabs'|'quiz'|'keywords';question?:string;answer?:string;options?:string[];correct?:number;explanation?:string;tabs?:Tab[]}
-export interface Slide {id:string;part:string;layout:'cover'|'statement'|'cards'|'steps'|'compare'|'case'|'interactive'|'closing'|'gallery';title:string;subtitle:string;message:string;minutes:number;body:string[];cards:Card[];sources:Source[];interaction?:Interaction;media?:Media;images?:Media[];demoId?:string;demoIds?:string[];prompt?:string}
+export interface Slide {id:string;part:string;layout:'cover'|'statement'|'cards'|'steps'|'compare'|'case'|'interactive'|'closing'|'gallery'|'image-link';title:string;subtitle:string;message:string;minutes:number;body:string[];cards:Card[];sources:Source[];interaction?:Interaction;media?:Media;images?:Media[];link?:{title:string;url:string};demoId?:string;demoIds?:string[];prompt?:string}
 export interface Demo {id:string;title:string;url:string;fallback:string;media?:Media}
 export interface Deck {slug:string;title:string;subtitle:string;presenter:string;version:number;slides:Slide[];demos:Demo[]}
 export interface Note {script:string;emphasis:string;question:string;example:string;transition:string}
