@@ -1,5 +1,5 @@
 export interface Source {label:string;url:string;date:string;checked:string}
-export interface Card {title:string;text:string;tag?:string}
+export interface Card {title:string;text:string;tag?:string;media?:Media}
 export interface Media {kind:'image'|'video';src:string;alt:string;x:number;y:number;zoom:number;path?:string}
 export interface Tab {label:string;text:string;vocab:string;activity:string;question:string}
 export interface Interaction {kind:'reveal'|'steps'|'tabs'|'quiz'|'keywords';question?:string;answer?:string;options?:string[];correct?:number;explanation?:string;tabs?:Tab[]}
