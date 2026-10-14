@@ -12,7 +12,7 @@ export async function portableDeck(input:Deck):Promise<Deck>{
    delete media.path;
   }finally{URL.revokeObjectURL(url)}
  }
- for(const slide of deck.slides){await embed(slide.media);for(const image of slide.images||[])await embed(image);for(const card of slide.cards)await embed(card.media);}
+ for(const slide of deck.slides){await embed(slide.media);for(const image of slide.images||[])await embed(image);for(const item of slide.imageLinks||[])await embed(item.media);for(const card of slide.cards)await embed(card.media);}
  for(const demo of deck.demos)await embed(demo.media);
  return cleanDeck(deck);
 }
