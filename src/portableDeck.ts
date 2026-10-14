@@ -1,11 +1,12 @@
 import type {Deck,Media} from './types';
 import {getLocal} from './localMedia';
+import {sign} from './backend';
 import {cleanDeck} from './model';
 export async function portableDeck(input:Deck):Promise<Deck>{
  const deck=structuredClone(input);
  async function embed(media?:Media){
-  if(!media?.path?.startsWith('local:'))return;
-  const url=await getLocal(media.path);
+  if(!media?.path)return;
+  const url=media.path.startsWith('local:')?await getLocal(media.path):await sign(media.path);
   try{const blob=await (await fetch(url)).blob();
    media.src=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(Error('이미지 내보내기 실패'));reader.readAsDataURL(blob)});
    delete media.path;
